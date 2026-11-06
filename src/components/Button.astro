@@ -1,0 +1,114 @@
+---
+import Icon from './Icon.astro';
+
+/** Buttons and links per manual p. 19: 48 px height, 12 × 32 padding. */
+interface Props extends astroHTML.JSX.AnchorHTMLAttributes {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  icon?: string;
+  /** Opens in a new tab and announces it to assistive tech. */
+  external?: boolean;
+  externalHint?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  icon,
+  external = false,
+  externalHint,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['btn', `btn--${variant}`, className]}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  {...rest}
+>
+  <span class="btn__label"><slot /></span>
+  {icon && <Icon name={icon} size={18} />}
+  {external && externalHint && <span class="sr-only">{externalHint}</span>}
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 12px 32px;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    border: 1.5px solid transparent;
+    transition:
+      background-color 0.2s var(--ease),
+      border-color 0.2s var(--ease),
+      box-shadow 0.2s var(--ease),
+      color 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+
+  .btn :global(.icon) {
+    transition: transform 0.25s var(--ease);
+  }
+
+  .btn:hover :global(.icon) {
+    transform: translateX(3px);
+  }
+
+  .btn--primary {
+    background: var(--cyan);
+    color: var(--navy);
+  }
+
+  .btn--primary:hover {
+    background: var(--cyan-light);
+    box-shadow: var(--glow-strong);
+  }
+
+  .btn--primary:active {
+    background: var(--blue-mid);
+    transform: translateY(1px);
+  }
+
+  .btn--secondary {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: transparent;
+  }
+
+  .btn--secondary:hover {
+    background: rgb(0 191 255 / 0.1);
+    border-color: var(--cyan-light);
+    color: var(--cyan-light);
+    box-shadow: var(--glow);
+  }
+
+  .btn--secondary:active {
+    background: rgb(0 191 255 / 0.18);
+    transform: translateY(1px);
+  }
+
+  .btn--tertiary {
+    padding-inline: 4px;
+    min-height: 44px;
+    color: var(--cyan);
+  }
+
+  .btn--tertiary:hover {
+    color: var(--cyan-light);
+  }
+
+  @media (max-width: 480px) {
+    .btn {
+      padding-inline: 24px;
+    }
+  }
+</style>

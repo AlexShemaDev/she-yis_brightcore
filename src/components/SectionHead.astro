@@ -1,0 +1,37 @@
+---
+interface Props {
+  /** 1-based position of the section on the rail. */
+  n: number;
+  tag: string;
+  title: string;
+  titleId: string;
+  lead?: string;
+  /** Heading level to render; the hero owns the only h1. */
+  level?: 'h2' | 'h3';
+}
+
+const { n, tag, title, titleId, lead, level: Level = 'h2' } = Astro.props;
+---
+
+<header class="head" data-reveal>
+  <p class="eyebrow">
+    <span class="eyebrow__n">{String(n).padStart(2, '0')}</span>
+    <span class="eyebrow__sep" aria-hidden="true"></span>
+    <span>{tag}</span>
+  </p>
+  <Level id={titleId} class="h2 head__title">{title}</Level>
+  {lead && <p class="lead">{lead}</p>}
+</header>
+
+<style>
+  .head {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+
+  .head__title {
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+</style>

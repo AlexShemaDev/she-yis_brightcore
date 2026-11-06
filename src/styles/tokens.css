@@ -1,0 +1,44 @@
+/* Design tokens — SHE-YIS BRIGHTCORE brand manual v3.0 (pp. 11–18, 28) */
+:root {
+  /* Surfaces: 70 % dark / 20 % surfaces */
+  --bg: #0a0e27;
+  --bg-2: #141829;
+  --card: #1a1f3a;
+  --navy: #0a2342;
+
+  /* Accent: 10 % cyan */
+  --cyan: #00bfff;
+  --cyan-light: #4effff;
+  --blue-mid: #1e90ff;
+  --hex: #006b8f;
+
+  /* Text */
+  --text: #f5f5f5;
+  --text-2: rgb(245 245 245 / 0.74);
+  --text-3: #999999;
+
+  /* Lines and glow (manual p. 18) */
+  --line: rgb(0 191 255 / 0.3);
+  --line-soft: rgb(0 191 255 / 0.12);
+  --line-strong: #00bfff;
+  --glow: 0 0 20px rgb(0 191 255 / 0.15);
+  --glow-strong: 0 0 24px rgb(0 191 255 / 0.35);
+
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Layout */
+  --header-h: 68px;
+  --rail-x: clamp(10px, 2.2vw, 34px);
+  --gutter-left: clamp(40px, 8.5vw, 128px);
+  --gutter: clamp(16px, 4vw, 56px);
+  /* rem, so the layout grows with the html font-size steps on large screens (global.css). */
+  --maxw: 74rem;
+  --container: calc(var(--maxw) + var(--gutter-left) + var(--gutter));
+  /* The rail follows the container's left edge so it never drifts from the content. */
+  --rail-left: calc(max(0px, (100vw - var(--container)) / 2) + var(--rail-x));
+  --section-y: clamp(88px, 12vw, 168px);
+
+  --radius: 8px;
+  --radius-lg: 16px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

@@ -1,0 +1,123 @@
+---
+import SectionHead from '../SectionHead.astro';
+import Icon from '../Icon.astro';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  n: number;
+  t: Dictionary['capabilities'];
+}
+
+const { n, t } = Astro.props;
+---
+
+<section
+  id="capabilities"
+  class="section caps"
+  data-section="capabilities"
+  aria-labelledby="capabilities-title"
+>
+  <div class="wrap caps__grid">
+    <div class="caps__head">
+      <SectionHead n={n} tag={t.tag} title={t.title} titleId="capabilities-title" lead={t.lead} />
+    </div>
+
+    <ul class="caps__list">
+      {
+        t.items.map((item) => (
+          <li class="cap" data-reveal-item>
+            <span class="cap__node" aria-hidden="true" />
+            <Icon name={item.icon} size={28} class="cap__icon" />
+            <div class="cap__body">
+              <h3 class="cap__title">{item.title}</h3>
+              <p class="cap__text">{item.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .caps__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .caps__head {
+    position: sticky;
+    top: calc(var(--header-h) + 48px);
+  }
+
+  .caps__list {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+
+  .cap {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 28px 8px 28px 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding-left 0.35s var(--ease);
+  }
+
+  /* A junction node slides in on the hovered line (interactive glow only). */
+  .cap__node {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 9px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: var(--glow-strong);
+    opacity: 0;
+    transform: translate(-6px, -50%);
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+
+  .cap:hover {
+    padding-left: 26px;
+  }
+
+  .cap:hover .cap__node {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  .cap :global(.cap__icon) {
+    color: var(--cyan);
+    margin-top: 2px;
+  }
+
+  .cap__title {
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .cap__text {
+    margin-top: 6px;
+    max-width: 52ch;
+    color: var(--text-2);
+  }
+
+  @media (max-width: 900px) {
+    .caps__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .caps__head {
+      position: static;
+    }
+  }
+</style>

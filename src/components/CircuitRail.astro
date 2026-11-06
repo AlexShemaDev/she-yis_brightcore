@@ -1,0 +1,207 @@
+---
+/**
+ * The "eje": a fixed vertical circuit with seven nodes, one per section.
+ * Without JS it is a plain anchor navigation; scripts/motion.ts fills the
+ * trace with scroll progress and marks nodes as active / passed.
+ */
+interface Props {
+  ids: readonly string[];
+  labels: readonly string[];
+  label: string;
+}
+
+const { ids, labels, label } = Astro.props;
+const last = ids.length - 1;
+---
+
+<nav class="rail" aria-label={label} style={`--last:${last}`}>
+  <div class="rail__track" aria-hidden="true">
+    <div class="rail__fill" data-rail-fill></div>
+  </div>
+  <ol class="rail__nodes">
+    {
+      ids.map((id, i) => (
+        <li class="rail__item" style={`--i:${i}`}>
+          <a class="rail__node" href={`#${id}`} data-rail-node={id} data-state="idle">
+            <span class="rail__ring" aria-hidden="true" />
+            <span class="rail__label">
+              <span class="rail__n" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              {labels[i]}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .rail {
+    --top: 16%;
+    --bottom: 10%;
+    position: fixed;
+    z-index: 20;
+    top: calc(var(--header-h) + 8px);
+    bottom: 0;
+    left: max(var(--rail-left), env(safe-area-inset-left));
+    width: 28px;
+    pointer-events: none;
+  }
+
+  .rail__track {
+    position: absolute;
+    left: 50%;
+    top: var(--top);
+    bottom: var(--bottom);
+    width: 2px;
+    transform: translateX(-50%);
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .rail__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--cyan);
+    transform-origin: top center;
+    transform: scaleY(var(--p, 0));
+    box-shadow: var(--glow-strong);
+  }
+
+  .rail__nodes {
+    position: absolute;
+    inset: 0;
+  }
+
+  .rail__item {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--top) + (100% - var(--top) - var(--bottom)) * var(--i) / var(--last));
+    transform: translate(-50%, -50%);
+  }
+
+  .rail__node {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    pointer-events: auto;
+  }
+
+  /* Invisible 44 × 44 touch target around the visible node. */
+  .rail__node::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  .rail__ring {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+    background: var(--bg);
+    transition:
+      background-color 0.3s var(--ease),
+      transform 0.3s var(--ease),
+      box-shadow 0.3s var(--ease);
+  }
+
+  .rail__node[data-state='passed'] .rail__ring {
+    background: rgb(0 191 255 / 0.55);
+  }
+
+  .rail__node[data-state='active'] .rail__ring {
+    background: var(--cyan);
+    transform: scale(1.35);
+    box-shadow: var(--glow-strong);
+  }
+
+  .rail__node:hover .rail__ring,
+  .rail__node:focus-visible .rail__ring {
+    background: var(--cyan-light);
+    box-shadow: var(--glow-strong);
+  }
+
+  .rail__label {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    margin-left: 8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--text);
+    opacity: 0;
+    transform: translate(-6px, -50%);
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease);
+    pointer-events: none;
+  }
+
+  .rail__n {
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Labels appear on hover/focus only, so the rail never covers the content. */
+  .rail__node:hover .rail__label,
+  .rail__node:focus-visible .rail__label {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  /* Short viewports (landscape phones): tighten the vertical margins so nodes keep spacing. */
+  @media (max-height: 480px) {
+    .rail {
+      --top: 8%;
+      --bottom: 4%;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .rail {
+      width: 20px;
+    }
+
+    .rail__node {
+      width: 20px;
+      height: 20px;
+    }
+
+    .rail__ring {
+      width: 9px;
+      height: 9px;
+      border-width: 1.5px;
+    }
+
+    /* Labels are visual-only on desktop; on small screens they stay available to
+       assistive tech (the node's accessible name) without being drawn. */
+    .rail__label {
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      border: 0;
+    }
+  }
+</style>

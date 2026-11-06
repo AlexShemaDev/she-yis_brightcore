@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+
+/**
+ * Luminous phone frame: a 1.5 px cyan border (manual p. 18) around a real
+ * app screenshot. Light screens stand out against the dark page on purpose.
+ */
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  width?: number;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { src, alt, width = 300, class: className, loading = 'lazy' } = Astro.props;
+---
+
+<figure class:list={['phone', className]}>
+  <div class="phone__body">
+    <span class="phone__island" aria-hidden="true"></span>
+    <Image
+      src={src}
+      alt={alt}
+      width={width}
+      loading={loading}
+      decoding="async"
+      class="phone__img"
+      sizes={`(max-width: 600px) 60vw, ${width}px`}
+    />
+  </div>
+</figure>
+
+<style>
+  .phone {
+    width: 100%;
+  }
+
+  .phone__body {
+    position: relative;
+    padding: 7px;
+    border: 1.5px solid var(--cyan);
+    border-radius: 34px;
+    background: var(--navy);
+    box-shadow: var(--glow);
+  }
+
+  .phone__island {
+    position: absolute;
+    z-index: 1;
+    top: 14px;
+    left: 50%;
+    width: 28%;
+    height: 7px;
+    border-radius: 99px;
+    background: var(--navy);
+    transform: translateX(-50%);
+    opacity: 0.9;
+  }
+
+  .phone :global(.phone__img) {
+    width: 100%;
+    height: auto;
+    border-radius: 27px;
+    background: #fdf8f3;
+  }
+</style>

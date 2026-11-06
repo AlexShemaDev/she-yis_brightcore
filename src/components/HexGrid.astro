@@ -1,0 +1,57 @@
+---
+/**
+ * Fixed hexagonal grid (manual p. 16): #006B8F, 120 px repeat, 10–15 % opacity.
+ * A second, brighter layer is revealed around the pointer (`--mx`/`--my`,
+ * set by scripts/motion.ts) so the glow only appears where the user interacts.
+ */
+const tile = (color: string) =>
+  `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='69.28' height='120' viewBox='0 0 69.28 120' fill='none' stroke='${color}' stroke-width='2' stroke-linejoin='round'><path d='M0 20 34.64 0 69.28 20V60L34.64 80 0 60Z M34.64 80V120'/></svg>`,
+  )}")`;
+---
+
+<div
+  class="hexgrid"
+  aria-hidden="true"
+  style={`--hex-base:${tile('#006B8F')};--hex-lit:${tile('#00BFFF')}`}
+>
+  <div class="hexgrid__base"></div>
+  <div class="hexgrid__lit"></div>
+</div>
+
+<style>
+  .hexgrid {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    --mx: 50%;
+    --my: 30%;
+  }
+
+  .hexgrid__base,
+  .hexgrid__lit {
+    position: absolute;
+    inset: 0;
+    background-size: 69.28px 120px;
+  }
+
+  .hexgrid__base {
+    background-image: var(--hex-base);
+    opacity: 0.12;
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 60% 20%, #000 20%, transparent 85%);
+    mask-image: radial-gradient(ellipse 90% 80% at 60% 20%, #000 20%, transparent 85%);
+  }
+
+  .hexgrid__lit {
+    background-image: var(--hex-lit);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease);
+    -webkit-mask-image: radial-gradient(circle 220px at var(--mx) var(--my), rgb(0 0 0 / 0.55), transparent 100%);
+    mask-image: radial-gradient(circle 220px at var(--mx) var(--my), rgb(0 0 0 / 0.55), transparent 100%);
+  }
+
+  :global(html.has-pointer) .hexgrid__lit {
+    opacity: 0.55;
+  }
+</style>

@@ -1,0 +1,264 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--bg);
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Large screens: scale everything defined in rem (type, --maxw, media widths). */
+@media (min-width: 1600px) {
+  html {
+    font-size: 112.5%;
+  }
+}
+
+@media (min-width: 2200px) {
+  html {
+    font-size: 131.25%;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgb(0 191 255 / 0.18);
+}
+
+a,
+button,
+summary {
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--cyan);
+  color: var(--navy);
+}
+
+:focus-visible {
+  outline: 2px solid var(--cyan-light);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-left: var(--gutter-left);
+  padding-right: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 8px;
+  left: 8px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  background: var(--cyan);
+  color: var(--navy);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Type scale (manual p. 14) ---------- */
+.h1,
+.h2,
+.h3 {
+  text-wrap: balance;
+}
+
+.h1 {
+  font-size: clamp(2rem, 1.2rem + 3.6vw, 3.5rem);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.h2 {
+  font-size: clamp(1.5rem, 1rem + 2.2vw, 2.5rem);
+  line-height: 1.22;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.h3 {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.lead {
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1875rem);
+  line-height: 1.65;
+  color: var(--text-2);
+  max-width: 62ch;
+}
+
+.accent {
+  color: var(--cyan);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.eyebrow__n {
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow__sep {
+  width: 28px;
+  height: 1px;
+  background: var(--line-strong);
+  opacity: 0.6;
+}
+
+/* ---------- Motion hooks ----------
+   Initial hidden states apply only when JS is on and motion has not failed
+   (html.js:not(.no-motion)); reduced motion always shows the final state.   */
+.js:not(.no-motion) [data-reveal],
+.js:not(.no-motion) [data-reveal-item] {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.js:not(.no-motion) .mark--intro [data-draw] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.js:not(.no-motion)
+  .mark--intro
+  :is(
+    [data-part='joints'],
+    [data-part='nodes'],
+    [data-part='links'],
+    [data-part='shamash'],
+    [data-part='halo']
+  ) {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal],
+  .js [data-reveal-item] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .js .mark--intro [data-draw] {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .js
+    .mark--intro
+    :is(
+      [data-part='joints'],
+      [data-part='nodes'],
+      [data-part='links'],
+      [data-part='shamash'],
+      [data-part='halo']
+    ) {
+    opacity: 1 !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

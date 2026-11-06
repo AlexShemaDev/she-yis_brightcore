@@ -1,0 +1,120 @@
+---
+import Button from '../Button.astro';
+import { siteConfig } from '../../config/site';
+import type { Dictionary } from '../../i18n';
+
+interface Props {
+  n: number;
+  t: Dictionary['contact'];
+}
+
+const { n, t } = Astro.props;
+const mailto = `mailto:${siteConfig.contactEmail}?subject=${encodeURIComponent(t.mailSubject)}`;
+---
+
+<section id="contact" class="section contact" data-section="contact" aria-labelledby="contact-title">
+  <div class="wrap contact__inner">
+    <p class="eyebrow" data-reveal>
+      <span class="eyebrow__n">{String(n).padStart(2, '0')}</span>
+      <span class="eyebrow__sep" aria-hidden="true"></span>
+      <span>{t.tag}</span>
+    </p>
+
+    <h2 id="contact-title" class="contact__title" data-reveal>{t.title}</h2>
+    <p class="lead" data-reveal>{t.text}</p>
+
+    <div class="contact__cta" data-reveal>
+      <Button href={mailto} icon="mail">{t.ctaMail}</Button>
+      <Button href="#neuremy" variant="secondary">{t.ctaProducts}</Button>
+    </div>
+
+    <p class="contact__mail" data-reveal>
+      <a href={mailto}>{siteConfig.contactEmail}</a>
+    </p>
+
+    <!-- Closing trace: a line that ends on the base node, like the symbol's. -->
+    <div class="trace" data-trace aria-hidden="true">
+      <div class="trace__line" data-trace-line></div>
+      <span class="trace__node" data-trace-node></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-bottom: clamp(48px, 6vw, 72px);
+  }
+
+  .contact__inner {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+
+  .contact__title {
+    font-size: clamp(3rem, 1.5rem + 8vw, 8rem);
+    line-height: 0.98;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .contact__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .contact__mail a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px; /* touch target; the underline stays on the text */
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 6px;
+    transition:
+      color 0.2s var(--ease),
+      text-decoration-color 0.2s var(--ease);
+  }
+
+  .contact__mail a:hover {
+    color: var(--cyan);
+    text-decoration-color: var(--cyan);
+  }
+
+  .trace {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: clamp(32px, 5vw, 56px);
+    margin-left: 5px;
+  }
+
+  .trace__line {
+    width: 2px;
+    height: clamp(72px, 10vw, 128px);
+    background: var(--cyan);
+    box-shadow: var(--glow-strong);
+    transform-origin: top center;
+    transform: scaleY(var(--p, 1));
+  }
+
+  .trace__node {
+    width: 14px;
+    height: 14px;
+    margin-left: -6px;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+    background: var(--bg);
+    transition:
+      background-color 0.3s var(--ease),
+      box-shadow 0.3s var(--ease);
+  }
+
+  .trace__node.is-lit {
+    background: var(--cyan);
+    box-shadow: var(--glow-strong);
+  }
+</style>

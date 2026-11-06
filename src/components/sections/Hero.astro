@@ -1,0 +1,283 @@
+---
+import LogoMark from '../LogoMark.astro';
+import Button from '../Button.astro';
+import { pick, type Dictionary, type Locale } from '../../i18n';
+import type { Product } from '../../data/products';
+
+interface Props {
+  locale: Locale;
+  t: Dictionary['hero'];
+  logoAlt: string;
+  products: readonly Product[];
+}
+
+const { locale, t, logoAlt, products } = Astro.props;
+---
+
+<section id="top" class="hero" data-section="top" aria-labelledby="hero-title">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow hero__rise" style="--d:0">
+        <span class="eyebrow__n">01</span>
+        <span class="eyebrow__sep" aria-hidden="true"></span>
+        <span>{t.eyebrow}</span>
+      </p>
+
+      <h1 id="hero-title" class="h1 hero__title">
+        <span class="line"><span class="line__in hero__rise" style="--d:1">{t.line1}</span></span>
+        <span class="line">
+          <span class="line__in line__in--accent hero__rise" style="--d:2">{t.line2}</span>
+        </span>
+      </h1>
+
+      <p class="lead hero__rise" style="--d:3">{t.lead}</p>
+
+      <div class="hero__cta hero__rise" style="--d:4">
+        <Button href="#neuremy" icon="arrow">{t.ctaProducts}</Button>
+        <Button href="#contact" variant="secondary">{t.ctaContact}</Button>
+      </div>
+    </div>
+
+    <div class="hero__mark" data-hero-mark>
+      <LogoMark class="hero__logo" title={logoAlt} pulse intro />
+    </div>
+  </div>
+
+  <div class="wrap">
+    <ul class="hero__products" aria-label={t.productsLabel}>
+      {
+        products.map((product, i) => (
+          <li class="hero__rise" style={`--d:${5 + i}`}>
+            <a class="chip" href={`#${product.id}`}>
+              <span class="chip__name">{product.name}</span>
+              <span class="chip__text">{pick(product.tagline, locale)}</span>
+              <span class="chip__go" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <p class="hero__scroll" aria-hidden="true">
+    <span>{t.scroll}</span>
+    <i></i>
+  </p>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(32px, 6vw, 72px);
+    min-height: calc(100svh - var(--header-h));
+    padding-block: clamp(32px, 6vw, 72px) clamp(72px, 9vw, 112px);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: clamp(24px, 5vw, 72px);
+  }
+
+  .hero__copy {
+    display: grid;
+    gap: clamp(20px, 3vw, 28px);
+    justify-items: start;
+  }
+
+  .line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+
+  .line__in {
+    display: block;
+  }
+
+  .line__in--accent {
+    color: var(--cyan);
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .hero__mark {
+    display: grid;
+    place-items: center;
+    justify-self: center;
+    width: min(100%, 28.75rem);
+  }
+
+  .hero :global(.hero__logo) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  /* Staggered entrance. Pure CSS so the headline (LCP) never waits for JS. */
+  :global(.js) .hero__rise {
+    animation: rise 0.8s var(--ease) both;
+    animation-delay: calc(var(--d, 0) * 110ms + 120ms);
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .hero__products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+  }
+
+  .chip {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 16px;
+    align-items: center;
+    padding: 16px 20px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: rgb(26 31 58 / 0.7);
+    transition:
+      border-color 0.25s var(--ease),
+      box-shadow 0.25s var(--ease),
+      transform 0.25s var(--ease);
+  }
+
+  .chip:hover {
+    border-color: var(--cyan);
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+  }
+
+  .chip__name {
+    grid-column: 1;
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+
+  .chip__text {
+    grid-column: 1;
+    font-size: 0.875rem;
+    color: var(--text-2);
+  }
+
+  .chip__go {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    color: var(--cyan);
+    font-size: 1.25rem;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .chip:hover .chip__go {
+    transform: translateX(4px);
+  }
+
+  .hero__scroll {
+    position: absolute;
+    left: calc(var(--gutter-left) - 4px);
+    bottom: 20px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .hero__scroll i {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    transform-origin: top;
+    animation: drip 2.4s var(--ease) infinite;
+  }
+
+  @keyframes drip {
+    0% {
+      transform: scaleY(0);
+    }
+    60% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .hero__scroll {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__mark {
+      order: -1;
+      /* Also capped by height so the headline stays near the fold on short phones. */
+      width: min(62vw, 17.5rem, 38svh);
+      justify-self: start;
+    }
+  }
+
+  /* Landscape phones: keep the two-column hero instead of stacking a full-height logo. */
+  @media (max-height: 520px) and (orientation: landscape) {
+    .hero {
+      min-height: 0;
+      gap: 24px;
+      padding-block: 24px 56px;
+    }
+
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+
+    .hero__mark {
+      order: 0;
+      width: min(100%, 70svh, 20rem);
+      justify-self: center;
+    }
+
+    .hero__title {
+      font-size: clamp(1.75rem, 4.4vw, 2.5rem);
+    }
+
+    .hero__copy {
+      gap: 14px;
+    }
+
+    .hero__copy :global(.lead) {
+      font-size: 0.9375rem;
+    }
+
+    .hero__scroll {
+      display: none;
+    }
+  }
+</style>

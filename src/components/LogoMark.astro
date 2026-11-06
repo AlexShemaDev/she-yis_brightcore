@@ -1,0 +1,148 @@
+---
+/**
+ * SHE-YIS BRIGHTCORE symbol (manual pp. 5–6), geometry unchanged.
+ * Each group exposes `data-part` and each stroke `data-draw` + pathLength=1 so
+ * `scripts/motion.ts` can draw and light it without touching the markup.
+ * Props never alter proportions or colors (manual p. 9).
+ */
+interface Props {
+  class?: string;
+  /** Accessible name. Omit for purely decorative uses. */
+  title?: string;
+  /** Pulses the shamash halo (2.6 s loop, disabled with prefers-reduced-motion). */
+  pulse?: boolean;
+  /** Starts hidden so the script can draw it in (hero and ecosystem). */
+  intro?: boolean;
+}
+
+const { class: className, title, pulse = false, intro = false } = Astro.props;
+---
+
+<svg
+  class:list={['mark', { 'mark--pulse': pulse, 'mark--intro': intro }, className]}
+  viewBox="0 0 240 240"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  <circle data-part="halo" class="mark__halo" cx="120" cy="40" r="20"></circle>
+
+  <g class="mark__strokes" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <g data-part="arms">
+      <path data-draw pathLength="1" d="M92 69 V96 L104 108"></path>
+      <path data-draw pathLength="1" d="M92 69 V96 L104 108" transform="matrix(-1 0 0 1 240 0)"></path>
+      <path data-draw pathLength="1" d="M120 134 H86 L64 112"></path>
+      <path data-draw pathLength="1" d="M120 134 H86 L64 112" transform="matrix(-1 0 0 1 240 0)"></path>
+      <path data-draw pathLength="1" d="M36 71 V128 L64 156 H80"></path>
+      <path data-draw pathLength="1" d="M36 71 V128 L64 156 H80" transform="matrix(-1 0 0 1 240 0)"></path>
+    </g>
+    <path data-part="stem" data-draw pathLength="1" d="M120 84 V176"></path>
+  </g>
+
+  <g data-part="joints" class="mark__fill">
+    <circle cx="104" cy="108" r="3.6"></circle>
+    <circle cx="136" cy="108" r="3.6"></circle>
+    <circle cx="64" cy="112" r="3.6"></circle>
+    <circle cx="176" cy="112" r="3.6"></circle>
+    <circle cx="120" cy="134" r="4.6"></circle>
+    <circle cx="80" cy="156" r="3.6"></circle>
+    <circle cx="160" cy="156" r="3.6"></circle>
+  </g>
+
+  <g data-part="nodes" class="mark__nodes" fill="none" stroke-width="4.5">
+    <circle cx="36" cy="64" r="6.5"></circle>
+    <circle cx="204" cy="64" r="6.5"></circle>
+    <circle cx="64" cy="50" r="7.5"></circle>
+    <circle cx="176" cy="50" r="7.5"></circle>
+    <circle cx="92" cy="62" r="6"></circle>
+    <circle cx="148" cy="62" r="6"></circle>
+    <circle cx="120" cy="204" r="7"></circle>
+  </g>
+
+  <g data-part="shamash" class="mark__shamash">
+    <circle cx="120" cy="40" r="11" fill="none" stroke-width="4.5"></circle>
+    <circle cx="120" cy="40" r="4"></circle>
+  </g>
+
+  <g data-part="links" class="mark__links">
+    <g fill="none" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M120 54 V80"></path>
+      <path d="M120 180 V193"></path>
+      <path d="M64 61 V107"></path>
+      <path d="M176 61 V107"></path>
+      <path d="M84 156 H116"></path>
+      <path d="M156 156 H124"></path>
+      <path d="M107.5 108 L111 112 H116"></path>
+      <path d="M132.5 108 L129 112 H124"></path>
+    </g>
+    <g fill-opacity="0.8">
+      <ellipse cx="111" cy="112" rx="1.8" ry="2.6"></ellipse>
+      <ellipse cx="129" cy="112" rx="1.8" ry="2.6"></ellipse>
+    </g>
+    <g fill-opacity="0.5">
+      <circle cx="64" cy="86" r="2.6"></circle>
+      <circle cx="176" cy="86" r="2.6"></circle>
+      <circle cx="100" cy="156" r="2.6"></circle>
+      <circle cx="140" cy="156" r="2.6"></circle>
+    </g>
+  </g>
+</svg>
+
+<style>
+  .mark {
+    --mark-line: var(--cyan);
+    --mark-light: var(--cyan-light);
+    display: block;
+    overflow: visible;
+  }
+
+  .mark__strokes,
+  .mark__nodes {
+    stroke: var(--mark-line);
+  }
+
+  .mark__fill,
+  .mark__links {
+    fill: var(--mark-line);
+  }
+
+  .mark__links path {
+    stroke: var(--mark-line);
+  }
+
+  .mark__shamash circle:first-child {
+    stroke: var(--mark-light);
+  }
+
+  .mark__shamash circle:last-child {
+    fill: var(--mark-light);
+  }
+
+  /* Glow lives on the shamash only (manual p. 12: glow on nodes/interactive). */
+  .mark__shamash {
+    filter: drop-shadow(0 0 6px rgb(78 255 255 / 0.55));
+  }
+
+  .mark__halo {
+    fill: var(--mark-light);
+    fill-opacity: 0.18;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .mark--pulse .mark__halo {
+    animation: halo-pulse 2.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes halo-pulse {
+    from {
+      transform: scale(0.85);
+      fill-opacity: 0.1;
+    }
+    to {
+      transform: scale(1.5);
+      fill-opacity: 0.22;
+    }
+  }
+</style>

@@ -1,0 +1,287 @@
+---
+import Wordmark from './Wordmark.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { localePath, otherLocale, type Dictionary, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  t: Dictionary['nav'];
+  homeLabel: string;
+}
+
+const { locale, t, homeLabel } = Astro.props;
+const home = localePath(locale);
+const switchHref = localePath(otherLocale(locale));
+
+const links = [
+  { href: `${home}#neuremy`, label: t.products },
+  { href: `${home}#ecosystem`, label: t.ecosystem },
+  { href: `${home}#capabilities`, label: t.capabilities },
+  { href: `${home}#about`, label: t.about },
+];
+---
+
+<header class="header" data-header>
+  <div class="header__bar">
+    <div transition:name="brand">
+      <Wordmark href={home} label={homeLabel} />
+    </div>
+
+    <nav class="header__nav" aria-label={t.label}>
+      <ul class="header__links">
+        {
+          links.map((link) => (
+            <li>
+              <a class="header__link" href={link.href}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a
+        class="header__lang"
+        href={switchHref}
+        hreflang={otherLocale(locale)}
+        lang={otherLocale(locale)}
+        aria-label={t.langLabel}
+      >
+        {t.langCode}
+      </a>
+      <Button href={`${home}#contact`} class="header__cta">{t.cta}</Button>
+
+      <details class="menu">
+        <summary class="menu__toggle">
+          <span class="sr-only menu__open">{t.openMenu}</span>
+          <span class="sr-only menu__close">{t.closeMenu}</span>
+          <Icon name="menu" class="menu__icon-open" />
+          <Icon name="close" class="menu__icon-close" />
+        </summary>
+        <div class="menu__panel">
+          <ul>
+            {
+              links.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))
+            }
+            <li>
+              <a href={`${home}#contact`} class="menu__cta">
+                {t.cta}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Delegated so it survives ClientRouter page swaps.
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('.menu__panel a')) {
+      document.querySelector<HTMLDetailsElement>('.menu')?.removeAttribute('open');
+    }
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 0.3s var(--ease),
+      border-color 0.3s var(--ease),
+      backdrop-filter 0.3s var(--ease);
+  }
+
+  .header[data-stuck='true'] {
+    background: rgb(10 14 39 / 0.82);
+    border-bottom-color: var(--line-soft);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+
+  .header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .header__nav {
+    margin-left: auto;
+  }
+
+  .header__links {
+    display: flex;
+    gap: 28px;
+  }
+
+  .header__link {
+    position: relative;
+    display: inline-block;
+    padding-block: 12px; /* 44 px touch target */
+    font-size: 0.875rem;
+    color: var(--text-2);
+    transition: color 0.2s var(--ease);
+  }
+
+  .header__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2px;
+    height: 1px;
+    background: var(--cyan);
+    transform: scaleX(0);
+    pointer-events: none;
+    transform-origin: left;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .header__link:hover {
+    color: var(--text);
+  }
+
+  .header__link:hover::after {
+    transform: scaleX(1);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header__lang {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--cyan);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition:
+      border-color 0.2s var(--ease),
+      box-shadow 0.2s var(--ease);
+  }
+
+  .header__lang:hover {
+    border-color: var(--cyan);
+    box-shadow: var(--glow);
+  }
+
+  .header__actions :global(.header__cta) {
+    min-height: 44px;
+    padding: 10px 24px;
+  }
+
+  .menu {
+    display: none;
+    position: relative;
+  }
+
+  .menu__toggle {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    list-style: none;
+    color: var(--cyan);
+  }
+
+  .menu__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu :global(.menu__icon-close),
+  .menu[open] :global(.menu__icon-open),
+  .menu[open] .menu__open,
+  .menu:not([open]) .menu__close {
+    display: none;
+  }
+
+  .menu[open] :global(.menu__icon-close) {
+    display: block;
+  }
+
+  .menu__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+    width: min(280px, calc(100vw - 2 * var(--gutter)));
+    padding: 8px;
+    background: var(--card);
+    border: 1.5px solid var(--cyan);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glow);
+  }
+
+  .menu__panel a {
+    display: block;
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    font-size: 1rem;
+  }
+
+  .menu__panel a:hover {
+    background: rgb(0 191 255 / 0.1);
+  }
+
+  .menu__panel .menu__cta {
+    margin-top: 4px;
+    background: var(--cyan);
+    color: var(--navy);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .header__nav,
+    .header__actions :global(.header__cta) {
+      display: none;
+    }
+
+    .menu {
+      display: block;
+    }
+
+    .header__actions {
+      margin-left: auto;
+    }
+  }
+
+  /* Compact bar so the brand and both buttons fit in 320 px without scrolling sideways. */
+  @media (max-width: 420px) {
+    .header__bar {
+      gap: 12px;
+    }
+
+    .header__actions {
+      gap: 8px;
+    }
+  }
+</style>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <circle id="halo-shamash" cx="120" cy="40" r="20" fill="#4EFFFF" fill-opacity="0.18"></circle>
+  <g id="trazos" fill="none" stroke="#00BFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M92 69 V96 L104 108"></path>
+    <path d="M92 69 V96 L104 108" transform="matrix(-1 0 0 1 240 0)"></path>
+    <path d="M120 134 H86 L64 112"></path>
+    <path d="M120 134 H86 L64 112" transform="matrix(-1 0 0 1 240 0)"></path>
+    <path d="M36 71 V128 L64 156 H80"></path>
+    <path d="M36 71 V128 L64 156 H80" transform="matrix(-1 0 0 1 240 0)"></path>
+    <path d="M120 84 V176"></path>
+  </g>
+  <g id="uniones" fill="#00BFFF"><circle cx="104" cy="108" r="3.6"></circle><circle cx="136" cy="108" r="3.6"></circle><circle cx="64" cy="112" r="3.6"></circle><circle cx="176" cy="112" r="3.6"></circle><circle cx="120" cy="134" r="4.6"></circle><circle cx="80" cy="156" r="3.6"></circle><circle cx="160" cy="156" r="3.6"></circle></g>
+  <g id="nodos" fill="none" stroke="#00BFFF" stroke-width="4.5">
+    <circle cx="36" cy="64" r="6.5"></circle><circle cx="204" cy="64" r="6.5"></circle><circle cx="64" cy="50" r="7.5"></circle><circle cx="176" cy="50" r="7.5"></circle><circle cx="92" cy="62" r="6"></circle><circle cx="148" cy="62" r="6"></circle>
+    <circle cx="120" cy="204" r="7"></circle>
+  </g>
+  <g id="shamash"><circle cx="120" cy="40" r="11" fill="none" stroke="#4EFFFF" stroke-width="4.5"></circle><circle cx="120" cy="40" r="4" fill="#4EFFFF"></circle></g>
+  <g id="conexiones" fill="none" stroke="#00BFFF" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M120 54 V80"></path>
+    <path d="M120 180 V193"></path>
+    <path d="M64 61 V107"></path>
+    <path d="M176 61 V107"></path>
+    <path d="M84 156 H116"></path>
+    <path d="M156 156 H124"></path>
+    <path d="M107.5 108 L111 112 H116"></path>
+    <path d="M132.5 108 L129 112 H124"></path>
+  </g>
+  <g id="uniones-conexion" fill="#00BFFF" fill-opacity="0.8"><ellipse cx="111" cy="112" rx="1.8" ry="2.6"></ellipse><ellipse cx="129" cy="112" rx="1.8" ry="2.6"></ellipse></g>
+  <g id="puntos-sueltos" fill="#00BFFF">
+    <circle cx="64" cy="86" r="2.6" fill-opacity="0.5"></circle><circle cx="176" cy="86" r="2.6" fill-opacity="0.5"></circle><circle cx="100" cy="156" r="2.6" fill-opacity="0.5"></circle><circle cx="140" cy="156" r="2.6" fill-opacity="0.5"></circle>
+  </g>
+</svg>

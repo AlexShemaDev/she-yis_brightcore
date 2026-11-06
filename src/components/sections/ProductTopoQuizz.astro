@@ -1,0 +1,288 @@
+---
+import SectionHead from '../SectionHead.astro';
+import PhoneFrame from '../PhoneFrame.astro';
+import Button from '../Button.astro';
+import Icon from '../Icon.astro';
+import { pick, type Dictionary, type Locale } from '../../i18n';
+import { formatInteger } from '../../i18n/format';
+import type { Product } from '../../data/products';
+import home from '../../assets/products/topoquizz/home.png';
+import quiz from '../../assets/products/topoquizz/quiz.png';
+import progress from '../../assets/products/topoquizz/progress.png';
+
+interface Props {
+  locale: Locale;
+  n: number;
+  t: Dictionary['topoquizz'];
+  product: Product;
+  externalHint: string;
+}
+
+const { locale, n, t, product, externalHint } = Astro.props;
+
+---
+
+<section
+  id="topoquizz"
+  class="section topoquizz"
+  data-section="topoquizz"
+  aria-labelledby="topoquizz-title"
+>
+  <div class="wrap topoquizz__grid">
+    <div class="topoquizz__stage">
+      <div class="topoquizz__halo" aria-hidden="true"></div>
+      <div class="stage__phone stage__phone--left" data-parallax="-24">
+        <PhoneFrame src={quiz} alt={t.imageAlts.quiz} width={260} />
+      </div>
+      <div class="stage__phone stage__phone--center" data-parallax="-56">
+        <PhoneFrame src={home} alt={t.imageAlts.home} width={300} />
+      </div>
+      <div class="stage__phone stage__phone--right" data-parallax="-12">
+        <PhoneFrame src={progress} alt={t.imageAlts.progress} width={260} />
+      </div>
+    </div>
+
+    <div class="topoquizz__copy">
+      <SectionHead
+        n={n}
+        tag={t.tag}
+        title={t.title}
+        titleId="topoquizz-title"
+        lead={pick(product.description, locale)}
+      />
+
+      <dl class="spec" data-reveal aria-label={t.specsLabel}>
+        {
+          product.stats.map((stat) => (
+            <div class="spec__row">
+              <dt>{pick(stat.label, locale)}</dt>
+              <dd
+                data-count={stat.value}
+                data-prefix={stat.prefix ?? ''}
+                data-locale={locale}
+              >
+                {`${stat.prefix ?? ''}${formatInteger(stat.value, locale)}`}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <ul class="feats" data-reveal>
+        {
+          product.features.map((feature) => (
+            <li class="feat">
+              <Icon name={feature.icon} size={22} class="feat__icon" />
+              <div>
+                <h3 class="feat__title">{pick(feature.title, locale)}</h3>
+                <p class="feat__text">{pick(feature.text, locale)}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="topoquizz__cta" data-reveal>
+        {
+          product.links.map((link) => (
+            <Button
+              href={link.href}
+              variant={link.kind}
+              icon={link.icon}
+              external
+              externalHint={externalHint}
+            >
+              {pick(link.label, locale)}
+            </Button>
+          ))
+        }
+        <p class="badges">
+          <span class="badge badge--beta">{pick(product.status, locale)}</span>
+          {product.upcoming && <span class="badge">{pick(product.upcoming, locale)}</span>}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .topoquizz__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 88px);
+  }
+
+  .topoquizz__stage {
+    position: relative;
+    min-height: clamp(26.25rem, 56vw, 40rem);
+  }
+
+  .topoquizz__halo {
+    position: absolute;
+    inset: 8% 0 0;
+    background: radial-gradient(closest-side, rgb(0 191 255 / 0.2), transparent);
+    filter: blur(28px);
+  }
+
+  .stage__phone {
+    position: absolute;
+    will-change: transform;
+  }
+
+  .stage__phone--center {
+    z-index: 2;
+    left: 50%;
+    top: 0;
+    width: min(54%, 18.75rem);
+    margin-left: calc(min(54%, 18.75rem) / -2);
+  }
+
+  .stage__phone--left {
+    z-index: 1;
+    left: 0;
+    top: 16%;
+    width: min(44%, 15.625rem);
+    transform: rotate(-5deg);
+  }
+
+  .stage__phone--right {
+    z-index: 1;
+    right: 0;
+    top: 22%;
+    width: min(44%, 15.625rem);
+    transform: rotate(5deg);
+  }
+
+  .topoquizz__copy {
+    display: grid;
+    gap: 32px;
+    justify-items: start;
+  }
+
+  /* Specs as a readout with dotted leaders, not stat cards. */
+  .spec {
+    display: grid;
+    width: 100%;
+    max-width: 28.75rem;
+    border-block: 1px solid var(--line);
+  }
+
+  .spec__row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-block: 14px;
+  }
+
+  .spec__row + .spec__row {
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .spec dt {
+    order: 0;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+  }
+
+  .spec__row::before {
+    content: '';
+    order: 1;
+    flex: 1;
+    align-self: center;
+    height: 0;
+    border-top: 2px dotted var(--line);
+  }
+
+  .spec dd {
+    order: 2;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .feats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 28px;
+  }
+
+  .feat {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .feat :global(.feat__icon) {
+    margin-top: 2px;
+    color: var(--cyan);
+  }
+
+  .feat__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .feat__text {
+    margin-top: 2px;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--text-2);
+  }
+
+  .topoquizz__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .badge {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .badge--beta {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  @media (max-width: 900px) {
+    .topoquizz__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .topoquizz__stage {
+      order: 2;
+      max-width: 32.5rem;
+      margin-inline: auto;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .feats {
+      grid-template-columns: 1fr;
+    }
+
+    .topoquizz__stage {
+      min-height: 23.75rem;
+    }
+  }
+</style>

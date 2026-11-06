@@ -1,0 +1,110 @@
+---
+import LogoMark from './LogoMark.astro';
+
+/**
+ * Lockups from manual p. 7: IBM Plex Sans uppercase, tracking +6 %,
+ * name SemiBold 600, legal form Regular 400. Real text (not outlines) for a11y.
+ */
+interface Props {
+  href?: string;
+  /** Horizontal lockup with the legal form (footer) vs compact lockup (navigation). */
+  legal?: boolean;
+  label: string;
+  class?: string;
+}
+
+const { href, legal = false, label, class: className } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  class:list={['wordmark', { 'wordmark--legal': legal }, className]}
+  href={href}
+  aria-label={href ? label : undefined}
+>
+  <LogoMark class="wordmark__mark" />
+  <span class="wordmark__text" aria-hidden={href ? 'true' : undefined}>
+    <span class="wordmark__name"
+      ><span class="wordmark__line">SHE&nbsp;-&nbsp;YIS</span> <span class="wordmark__line">BRIGHTCORE</span></span
+    >
+    {legal && <span class="wordmark__llc">LLC</span>}
+  </span>
+</Tag>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px; /* touch target */
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .wordmark :global(.wordmark__mark) {
+    flex: none;
+    width: 40px;
+    height: 40px;
+  }
+
+  .wordmark__text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    font-size: 0.8125rem;
+  }
+
+  .wordmark__name {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .wordmark__llc {
+    font-weight: 400;
+    color: var(--text-2);
+  }
+
+  .wordmark--legal :global(.wordmark__mark) {
+    width: 56px;
+    height: 56px;
+  }
+
+  .wordmark--legal .wordmark__text {
+    font-size: 0.9375rem;
+  }
+
+  /* Stacked lockup (manual p. 7, "apilada") on narrow screens keeps >= 12 px text. */
+  @media (max-width: 420px) {
+    .wordmark {
+      gap: 10px;
+    }
+
+    .wordmark :global(.wordmark__mark) {
+      width: 36px;
+      height: 36px;
+    }
+
+    .wordmark__text {
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .wordmark__name {
+      white-space: normal;
+    }
+
+    .wordmark__line {
+      display: block;
+    }
+
+    .wordmark--legal :global(.wordmark__mark) {
+      width: 48px;
+      height: 48px;
+    }
+
+    .wordmark--legal .wordmark__text {
+      font-size: 0.8125rem;
+    }
+  }
+</style>

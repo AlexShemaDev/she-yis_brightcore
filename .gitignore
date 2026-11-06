@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.env
+.env.*
+!.env.example
+npm-debug.log*
+
+# Brand source material (manual PDF, SVG sources): kept locally, not versioned.
+context/
