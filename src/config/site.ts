@@ -3,8 +3,7 @@ export const siteConfig = {
   name: 'SHE - YIS BRIGHTCORE LLC',
   shortName: 'SHE - YIS BRIGHTCORE',
   year: 2026,
-  /** TODO: placeholder on a reserved domain (RFC 2606) — replace with the real contact email. */
-  contactEmail: 'contacto@example.com',
+  contactEmail: 'contacto@sheyisbrightcore.com',
   themeColor: '#0A0E27',
 } as const;
 
