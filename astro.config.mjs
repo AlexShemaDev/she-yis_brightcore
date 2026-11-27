@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// TODO: replace with the real production domain before deploying.
-const site = 'https://she-yis-brightcore.example';
+const site = 'https://sheyisbrightcore.com';
 
 export default defineConfig({
   site,
